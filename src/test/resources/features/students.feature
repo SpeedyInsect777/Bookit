@@ -6,7 +6,7 @@ Feature: Create Student
     When I send POST request "/api/students/student" endpoint with following information
       | first-name      | mike                |
       | last-name       | smith               |
-      | email           | ms01@cydeo.com      |
+      | email           | msms@cydeo.com      |
       | password        | abc123              |
       | role            | student-team-member |
       | campus-location | VA                  |

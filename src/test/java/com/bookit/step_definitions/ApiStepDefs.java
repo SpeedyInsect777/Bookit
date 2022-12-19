@@ -183,7 +183,7 @@ public class ApiStepDefs {
          response = given().accept(ContentType.JSON)
                 .header("Authorization", token)
                 .queryParams(userInfo).
-                when().post(Environment.BASE_URL + endpoint);
+                when().post(Environment.BASE_URL + endpoint).prettyPeek();
 
     }
     @Then("I delete previously added student")
@@ -199,7 +199,10 @@ public class ApiStepDefs {
         when().delete(Environment.BASE_URL+"/api/students/{id}").
                 then().statusCode(204);
 
-
+        /**
+         * I have this error: Expected :201
+         * Actual   :422
+         */
 
 
     }
