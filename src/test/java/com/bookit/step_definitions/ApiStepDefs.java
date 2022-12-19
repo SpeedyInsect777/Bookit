@@ -200,8 +200,21 @@ public class ApiStepDefs {
                 then().statusCode(204);
 
         /**
-         * I have this error: Expected :201
-         * Actual   :422
+         * Can you explain this part where we need to get email?
+         *  - you can use any email that you did not create as a student
+         *
+         *  We need to put any email in postman ?
+         *   - No.Why?
+         *     - We already created student in POSTMAN together.If the student already created can we use same email ?
+         *          - NO
+         *  Why we need curl and where we need to use it ?
+         *    - This is just fro tool to share your request with your friends or peers.
+         *
+         *  Also we need to change only email and password part on scenario? ?
+         *    - No.We did create one "And I delete previously added student" step to delete
+         *      created students in saem feature by getting student id
+         *
+         *          int idToDelete = response.path("entryiId");
          */
 
 
