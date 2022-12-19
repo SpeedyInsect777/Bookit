@@ -1,4 +1,3 @@
-
 Feature: User Verification
 
   Scenario: verify information about logged user
@@ -16,7 +15,7 @@ Feature: User Verification
 
 
 # API vs DB vs UI ---> Three point verification
-  @wip @db @ui
+
   Scenario: three point/layer (UI,API,DATABASE)
     Given user logs in using "team-leader" credentials
     And user is on the my self page
@@ -25,4 +24,17 @@ Feature: User Verification
     Then UI,API and Database user information must be match
 
 
+  @wip @db @ui
+  Scenario Outline: three point/layer (UI,API,DATABASE)
+    Given user logs in using "<role>" credentials
+    And user is on the my self page
+    And I logged Bookit api as a "<role>"
+    When I sent get request to "/api/users/me" endpoint
+    Then UI,API and Database user information must be match
+
+    Examples:
+      | role        |
+      | teacher     |
+      | team-leader |
+      | team-member |
 
