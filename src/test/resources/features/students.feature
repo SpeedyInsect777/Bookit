@@ -6,7 +6,7 @@ Feature: Create Student
     When I send POST request "/api/students/student" endpoint with following information
       | first-name      | mike                |
       | last-name       | smith               |
-      | email           | msmith@cydeo.com    |
+      | email           | ms01@cydeo.com      |
       | password        | abc123              |
       | role            | student-team-member |
       | campus-location | VA                  |
@@ -14,3 +14,5 @@ Feature: Create Student
       | team-name       | Nukes               |
     Then status code should be 201
     And I delete previously added student
+
+    #Email information needs to be unique.Change email info from there to do it for you unique

@@ -173,4 +173,37 @@ public class ApiStepDefs {
 
     }
 
+    /**
+     * ADD STUDENT
+     */
+
+    @When("I send POST request {string} endpoint with following information")
+    public void i_send_post_request_endpoint_with_following_information(String endpoint, Map<String,String> userInfo) {
+
+         response = given().accept(ContentType.JSON)
+                .header("Authorization", token)
+                .queryParams(userInfo).
+                when().post(Environment.BASE_URL + endpoint);
+
+    }
+    @Then("I delete previously added student")
+    public void i_delete_previously_added_student() {
+
+        int idToDelete = response.path("entryiId");
+        System.out.println("entryiId = " + idToDelete);
+
+        // ENDPOINT --> DELETE /api/students/{id} --> FROM DOCUMENT
+
+        given().header("Authorization",token).
+                pathParam("id",idToDelete).
+        when().delete(Environment.BASE_URL+"/api/students/{id}").
+                then().statusCode(204);
+
+
+
+
+    }
+
+
+
 }
