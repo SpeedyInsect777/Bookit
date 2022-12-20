@@ -16,6 +16,8 @@ import org.junit.Assert;
 import java.util.Map;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public class ApiStepDefs {
 
@@ -218,8 +220,67 @@ public class ApiStepDefs {
          */
 
 
+
+
     }
 
+    /**
+     *
+     * ADD TEAM
+     *
+     */
+    Map<String, String> newRecordMap;
+    int newTeamID;
 
+    @When("Users sends POST request to {string} with following info:")
+    public void users_sends_post_request_to_with_following_info (String endpoint, Map<String, String> dataMap) {
+        response =given().accept(ContentType.JSON)
+                .and().queryParams(dataMap)
+                .and().header("Authorization", token)
+                .when().post(Environment.BASE_URL + endpoint);
+        response.prettyPeek();
+
+        //store into newRecordMap so that we can use for validation in next step
+        newRecordMap = dataMap;
+
+
+
+    }
+
+    @Then("Database should persist same team info")
+    public void database_should_persist_same_team_info() {
+        response.prettyPeek();
+        newTeamID = response.path("entryiId");
+
+        System.out.println(" --------------> New Team is created --> ID is "+ newTeamID);
+
+        String sql = "SELECT name,location,batch_number FROM team t inner join campus c on c.id = t.campus_id WHERE t.id =" + newTeamID;
+
+        /**
+         * SELECT name,location,batch_number FROM team t inner join campus c on c.id = t.campus_id
+         *          WHERE t.id = 16664;
+         */
+        DB_Util.runQuery(sql);
+        Map<String, String> dbNewTeamMap = DB_Util.getRowMap(1);
+
+        System.out.println("sql = " + sql);
+        System.out.println("dbNewTeamMap = " + dbNewTeamMap);
+
+        assertThat(dbNewTeamMap.get("name"), equalTo(newRecordMap.get("team-name")));
+        assertThat(dbNewTeamMap.get("location"), equalTo(newRecordMap.get("campus-location")));
+        assertThat(dbNewTeamMap.get("batch_number"), equalTo(newRecordMap.get("batch-number")));
+    }
+
+    @Then("User deletes previously created team")
+    public void user_deletes_previously_created_team() {
+        given().accept(ContentType.JSON)
+                .and().header("Authorization", token)
+                .and().pathParam("id", newTeamID)
+                .when().delete(Environment.BASE_URL + "/api/teams/{id}")
+                .then().log().all();
+
+        System.out.println("-------------->  New Team is deleted --> ID is "+ newTeamID);
+
+    }
 
 }
