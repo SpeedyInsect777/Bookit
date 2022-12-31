@@ -1,0 +1,192 @@
+
+
+
+API DAY 09 --> CUCUMBER 
+
+
+CUCUMBER ALL LAYER UI - API - DB
+
+
+Project details
+
+    1- Start with dependencies to explain what we need
+        Rest Assured --> API
+        Selenium     --> Browser Automation Tool
+        Bonigarcia(Webdriver Manager) --> Based on browser type we need to setup driver.It will manage this for use
+        Cucumber --> It is for BDD frameworks
+        Postgres --> It is driver for Postgres Database
+                    if it is MYSQL use MYSQL driver
+                    if it is Oracle use ORACLE driver
+                    There is no dependency like bonigarcia to manage drivers
+        Jackson --> Serilization and Deserilization
+                       Databind library , ObjectMapper
+                       it will convert
+
+                          POST-PUT-PATCH -->  Java to JSON --> Serialization
+                                body()--> method will do it
+
+                          GET --> JSON to Java --> Deserilzation
+                                  resposne.as()
+                                  jsonPath.
+         
+         Lombok --> We are using to get rid of boiler plate code from Object Classes
+                    @Data @Getter@Settters ....
+                    It helps us annotate the class based on what we need
+
+                    But mostly it is used in development
+
+     2- Pages
+                TopNavigationBar
+                        - Abstract Class--> We are not gonna create object from this class
+                        - It is parent for other pages
+
+                 OtherPages are regular pages
+
+     3- runners
+                - CukesRunner
+                - FailedTestRunner
+
+     4- stepdef
+                - Hooks
+                       - it will run for every scenario
+                       - What is the meaning of @db
+                            These are custom hooks
+     5- Utilities
+
+                BookitUtils
+                BrowserUtils
+                ConfigurationReader
+                DB_Util
+                Driver
+
+
+--> Database Conection for POSTGRES 
+
+    #database connection info
+    dbUsername=qa_user
+    dbPassword=Cybertek11!
+    dbUrl=jdbc:postgresql://room-reservation-qa.cxvqfpt4mc2y.us-east-1.rds.amazonaws.com:5432/room_reservation_qa
+
+
+
+    - Database Tab 
+    - Data Sources 
+    - Fill necessary field as we did before 
+    - Download missing drivers 
+    - Apply OK 
+    - If tables are not visible REFRESH Connection 
+
+
+-----------ENV VARIABLES --------------------
+
+
+ - We have move everything like url,baseurl,db connection string,valid credentials for each user type 
+    to new qa1,qa2,qa3.properties file that we created under resources/Environments folder.
+    The only info we left in configuration.properties file is
+
+    browser=chrome
+    environment=qa2
+
+- Then we have created new Environment class under Utilities package where we have very similar static block 
+   with ConfigurationReader. the only difference is we create dynamic path in this new class. 
+   it is accepting environment value from our configuration.properties file and generating new path. 
+   So based on the environment we have it will load that env file.example
+
+if conf is following;
+
+    browser=chrome
+    environment=qa2
+
+    it will create path as following
+    environment=ConfiguraitonReader.get("environment") --> this will get env from configuraiton.properties file
+
+String path = System.getProperty("user.dir") + "/src/test/resources/Environments/" + environment + ".properties"; 
+            --> variable will update and new path will be generated
+
+
+- Then we have created constant variables to load our env specific properties files so that we can just call them 
+  whenever we need it instead of using getters of properties.
+
+        public static final String URL;
+
+        URL = properties.getProperty("url");
+
+        Environment.URL --> usage
+
+
+Scenario: we have set our environment in configuraiton.propeties file, can we also set it with terminal ?
+
+
+String environment = System.getProperty("environment") != null ? environment = System.getProperty("environment") : ConfigurationReader.get("environment");
+
+So the logic is: if there is enviroment passed through command line, we will use that value to assign  enviroment.
+if not it will get it from ConfigurationReader file just like before.
+
+
+     
+
+
+      =>   String environment = System.getProperty("environment") != null ? environment = System.getProperty("environment") 
+                                                                         : ConfigurationReader.getProperty("environment");
+
+        System.getProperty("environment") --> It will check and read system variables that defined as environment 
+
+        RUN FROM CUKES
+            
+            System.getProperty("environment") --> NULL 
+            
+            ConfigurationReader.getProperty("environment")  will read environment=qa1
+
+            In that case environment will be 
+                
+                environment =ConfigurationReader.getProperty("environment") 
+                environment =qa1
+
+                It will run testcases against qa1
+        
+
+        RUN FROM MAVEN
+
+        - Make sure you added plugin 
+             <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.0.0-M3</version>
+                        <configuration>
+                            <parallel>methods</parallel>
+                            <useUnlimitedThreads>true</useUnlimitedThreads>
+                            <testFailureIgnore>true</testFailureIgnore>
+                            <runOrder>Alphabetical</runOrder>
+                            <includes>
+                            <include>**/*CukesRunner.java</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+            </plugins>
+            </build>  
+          
+         
+         - Run from maven 
+
+         - mvn test  -Denvironment = qa2
+
+            -D --> Defines system variable called as environment
+
+            System.getProperty("environment") != null ? environment = System.getProperty("environment")  
+
+            System.getProperty("environment") is not null and all testcases will run against qa2
+
+
+
+
+JUST LIKE WE DID IN JENKINS
+
+    - We can run tests against different environments with the help of 
+
+        test -Denvironment=qa3 -Dbrowser=firefox -Dcucumber.filter.tags="@smoke" -Dusername  ...........
+
+
+
+
