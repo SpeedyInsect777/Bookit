@@ -13,7 +13,7 @@ public class EnvironmentStepDefs {
         System.out.println("Environment.URL = " + Environment.URL);
         System.out.println("Environment.BASE_URL = " + Environment.BASE_URL);
         System.out.println("Environment.DB_URL = " + Environment.DB_URL);
-
+//
     }
 
     @Given("I get related field data from maven")
