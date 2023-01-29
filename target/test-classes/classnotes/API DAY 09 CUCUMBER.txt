@@ -12,24 +12,25 @@ Project details
     1- Start with dependencies to explain what we need
         Rest Assured --> API
         Selenium     --> Browser Automation Tool
-        Bonigarcia(Webdriver Manager) --> Based on browser type we need to setup driver.It will manage this for use
+        Bonigarcia(Webdriver Manager) --> Based on browser type we need setup driver.
+        It will manage this for use
         Cucumber --> It is for BDD frameworks
         Postgres --> It is driver for Postgres Database
                     if it is MYSQL use MYSQL driver
                     if it is Oracle use ORACLE driver
                     There is no dependency like bonigarcia to manage drivers
-        Jackson --> Serilization and Deserilization
+        Jackson --> Serialization and Deserialization
                        Databind library , ObjectMapper
                        it will convert
 
                           POST-PUT-PATCH -->  Java to JSON --> Serialization
                                 body()--> method will do it
 
-                          GET --> JSON to Java --> Deserilzation
-                                  resposne.as()
+                          GET --> JSON to Java --> Deserialization
+                                  response.as()
                                   jsonPath.
          
-         Lombok --> We are using to get rid of boiler plate code from Object Classes
+         Lombok --> We are using to get rid of boilerplate code from Object Classes
                     @Data @Getter@Settters ....
                     It helps us annotate the class based on what we need
 
@@ -60,7 +61,7 @@ Project details
                 Driver
 
 
---> Database Conection for POSTGRES 
+--> Database Connection for POSTGRES
 
     #database connection info
     dbUsername=qa_user
@@ -117,17 +118,20 @@ String path = System.getProperty("user.dir") + "/src/test/resources/Environments
 Scenario: we have set our environment in configuraiton.propeties file, can we also set it with terminal ?
 
 
-String environment = System.getProperty("environment") != null ? environment = System.getProperty("environment") : ConfigurationReader.get("environment");
+String environment = System.getProperty("environment")
+!= null ? environment = System.getProperty("environment") : ConfigurationReader.get("environment");
 
-So the logic is: if there is enviroment passed through command line, we will use that value to assign  enviroment.
+So the logic is: if there is environment passed through command line,
+ we will use that value to assign  environment.
 if not it will get it from ConfigurationReader file just like before.
 
 
      
 
 
-      =>   String environment = System.getProperty("environment") != null ? environment = System.getProperty("environment") 
-                                                                         : ConfigurationReader.getProperty("environment");
+      =>   String environment = System.getProperty("environment")
+      != null ? environment = System.getProperty("environment")
+        : ConfigurationReader.getProperty("environment");
 
         System.getProperty("environment") --> It will check and read system variables that defined as environment 
 
